@@ -119,8 +119,25 @@ def draw(hand, top_discard, last_turn, picked_up_discard_cards, player_position,
     discard pile if the top_discard card is not None. 
     '''
     
-    if top_discard == wildcard_rank:
+    #No cards in the discard pile
+    if top_discard == None:
+        return 'stock'
+    
+    #Top card of discard pile is of the same rank as the wildcard
+    if get_rank(top_discard) == wildcard_rank:
         return 'discard'
+    
+    #Iterating through each card in the hand and comparing to top discard card
+    #Needs editing because some of it is wrong (will do it later today - Julia)
+    for card_num in hand:
+        #if same_rank(card_num, top_discard) or same_suit(card_num, top_discard):
+            #return 'discard'
+        
+        if last_turn and get_rank(top_discard) in RANKS[8:12] and same_rank(card_num, top_discard) == False and same_suit(card_num, top_discard) == False:
+            return 'stock'
+        
+        
+#draw([1,2,35, 47, 48], 45, True, [3,6,19,4], 2, 5, 4) Testing (should be discard but gives stock)
 
 def discard(hand, last_turn, picked_up_discard_cards, player_position, wildcard_rank, num_turns_this_round):
     '''(list, bool, list, int, int, int) -> int
