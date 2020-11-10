@@ -74,34 +74,42 @@ def potential_arrangement(a_hand, wildcard_rank):
                 #any card with this rank gives a group
                 for n in range(0,4):
                     wanted_cards += [get_card(n, get_rank(a_hand[i]))]
-                    
-            #if card1 +-1 card2, then cards +-1 card1 and card2 -> seq       
-            if abs(get_rank(a_hand[j]) - get_rank(a_hand[i])) == 1:
-                                
-                if get_rank(a_hand[i]) < 13 and get_rank(a_hand[j]) < 13:
-                    wanted_cards += [get_card(get_suit(a_hand[i]), (max([get_rank(a_hand[j]),get_rank(a_hand[i])])) + 1)]
-                if get_rank(a_hand[i]) > 0 and get_rank(a_hand[j]) > 0:
-                    wanted_cards += [get_card(get_suit(a_hand[i]), (min([get_rank(a_hand[j]),get_rank(a_hand[i])])) - 1)]
-            
-            #if card1 +-2 card2, then cards between card1 and 2 -> seq       
-            if abs(get_rank(a_hand[j]) - get_rank(a_hand[i])) == 2:
-                
-                max_card = max([get_rank(a_hand[j]),get_rank(a_hand[i])])
-                min_card = min([get_rank(a_hand[j]),get_rank(a_hand[i])])
-                
-                wanted_cards += [get_card(get_suit(a_hand[i]), max_card - min_card)]
-        
-        
+            '''
             #if there is already a seq, cards +-1 max and min -> seq
             for elements in get_arrangement(a_hand, wildcard_rank):
                 
                 if is_valid_sequence(elements, wildcard_rank):
-                    wanted_cards += [get_card(get_suit(a_hand[i]), get_rank(max(elements)))]
-                    wanted_cards += [get_card(get_suit(a_hand[i]), get_rank(min(elements)))]
+                    
+                    if get_rank(max(elements)) < 13:
+                        wanted_cards += [get_card(get_suit(max(elements)), get_rank(max(elements)) + 1)]
+                    
+                    if get_rank(min(elements)) > 0:
+                        wanted_cards += [get_card(get_suit(min(elements)), get_rank(min(elements)) - 1)]
+            '''
+            
+            #if card1 +-1 card2, then cards +-1 card1 and card2 -> seq       
+            if abs(a_hand[j] - a_hand[i]) == 4:
+                
+                max_card = max([get_rank(a_hand[j]),get_rank(a_hand[i])])
+                min_card = min([get_rank(a_hand[j]),get_rank(a_hand[i])])
+                
+                if get_rank(a_hand[i]) < 13 and get_rank(a_hand[j]) < 13:
+                    wanted_cards += [get_card(get_suit(a_hand[i]), (max_card) + 1)]
+                    
+                if get_rank(a_hand[i]) > 0 and get_rank(a_hand[j]) > 0:
+                    wanted_cards += [get_card(get_suit(a_hand[i]), (min_card) - 1)]
+            
+            #if card1 +-2 card2, then cards between card1 and 2 -> seq       
+            if abs(a_hand[j] - a_hand[i]) == 8:
+                
+                max_card = max([get_rank(a_hand[j]),get_rank(a_hand[i])])
+                min_card = min([get_rank(a_hand[j]),get_rank(a_hand[i])])
+                
+                wanted_cards += [get_card(get_suit(a_hand[i]), max_card - 1)]
             
             i += 1
         j += 1
-            
+    
     output_list = []
     
     #put the elements in order
@@ -115,18 +123,19 @@ def potential_arrangement(a_hand, wildcard_rank):
             output_list.remove(e)
     
     return output_list
-        
+
+potential_arrangement([2, 3, 4, 8, 12], 10)
 doctest.testmod()
 
 '''
 
 def draw(hand, top_discard, last_turn, picked_up_discard_cards, player_position, wildcard_rank, num_turns_this_round):
-     (list, int, bool, list, int, int, int) -> str
+    (list, int, bool, list, int, int, int) -> str
 
     This function decides from where to pick up a card: from the discard pile or
     from the stock. It must return either the string stock or discard. Note that it can only draw from the
-    discard pile if the top_discard card is not None. To aid in your decision, the function has the following
-    parameters
+    discard pile if the top_discard card is not None. 
+    
     
     if top_discard == wildcard_rank:
         return 'discard'
