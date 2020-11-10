@@ -4,13 +4,12 @@ from card import *
 from arrangement import *
 import doctest
 
-
 def potential_arrangement(a_hand, wildcard_rank):
     '''(list, int) -> list
 
     Given a hand, returns a list of the cards that could potentially complete an arrangement.
     
-    potential_arrangement([1, 5, 9, 13], 10) #wildcard not involved, 1 seq 
+    >>> potential_arrangement([1, 5, 9, 13], 10) #wildcard not involved, 1 seq 
     [1, 5, 9, 13, 17]
 
     >>> potential_arrangement([1, 5, 9, 13], 3) #wildcard involved, 1 seq
@@ -76,24 +75,23 @@ def potential_arrangement(a_hand, wildcard_rank):
                 for n in range(0,4):
                     wanted_cards += [get_card(n, get_rank(a_hand[i]))]
             
-            #if card1 +-1 card2, then cards +-1 card1 and card2 -> seq       
+            #if the rank of card1 +- 1 = rank of card2, then cards sequence is formed when a card from the same suit
+            #but with a rank higher than card2 or lower than card 1 is drawn
             if abs(a_hand[j] - a_hand[i]) == 4:
                 
                 max_card = max([get_rank(a_hand[j]),get_rank(a_hand[i])])
                 min_card = min([get_rank(a_hand[j]),get_rank(a_hand[i])])
                 
-                if get_rank(a_hand[i]) < 13 and get_rank(a_hand[j]) < 13:
+                if max_card < 13:
                     wanted_cards += [get_card(get_suit(a_hand[i]), (max_card) + 1)]
                     
-                if get_rank(a_hand[i]) > 0 and get_rank(a_hand[j]) > 0:
+                if min_card > 0:
                     wanted_cards += [get_card(get_suit(a_hand[i]), (min_card) - 1)]
             
-            #if card1 +-2 card2, then cards between card1 and 2 -> seq       
+            #if the rank of card1 +- 2 = rank of card2, then cards sequence is formed when a card from the same suit
+            #but with a rank higher between card2 and card1 is drawn      
             if abs(a_hand[j] - a_hand[i]) == 8:
-                
                 max_card = max([get_rank(a_hand[j]),get_rank(a_hand[i])])
-                min_card = min([get_rank(a_hand[j]),get_rank(a_hand[i])])
-                
                 wanted_cards += [get_card(get_suit(a_hand[i]), max_card - 1)]
             
             i += 1
@@ -150,20 +148,20 @@ def discard(hand, last_turn, picked_up_discard_cards, player_position, wildcard_
     discard_value = [] 
     for i in range(len(discard_cards)):
         
+        #if it is the last turn, it is more important to discard higher value cards
         turn_multiplier = 1
-        
         if last_turn:
             turn_multiplier = 3
         
+        #the penalty point associated to each card in ours hand that is not apart of an arrangement
         points = [2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 1]
         discard_value += [points[RANKS.index(get_rank(discard_cards[i]))]] * turn_multiplier
 
         #if player_position != : #to do, if the player is the last player to play before the round ends,
         #then don't care about the following:
+        #discarding cards in potential_arrangement gives an advantage to other players, thus the penalty value is disminished
         for others_hand in picked_up_discard_cards:
             if discard_cards[i] in potential_arrangement(others_hand, wildcard_rank):
                 discard_value[i] = discard_value[i] / 2 #TBD
-    
-        #to discard the card with the highest penalty point
     
     return discard_cards[discard_value.index(max(discard_value))] #the card with the highest value will be discarded
