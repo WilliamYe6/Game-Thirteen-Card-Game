@@ -127,13 +127,17 @@ def draw(hand, top_discard, last_turn, picked_up_discard_cards, player_position,
     if get_rank(top_discard) == wildcard_rank:
         return 'discard'
     
+    #if the top card on the discard pile can form an arrangement
+    if top_discard in potential_arrangement(hand, wildcard_rank):
+        return 'discard'
+    
     #Iterating through each card in the hand and comparing to top discard card
     #Needs editing because some of it is wrong (will do it later today - Julia)
     for card_num in hand:
         #if same_rank(card_num, top_discard) or same_suit(card_num, top_discard):
             #return 'discard'
         
-        if last_turn and get_rank(top_discard) in RANKS[8:12] and same_rank(card_num, top_discard) == False and same_suit(card_num, top_discard) == False:
+        if last_turn and get_rank(top_discard) in RANKS[8:12] and not same_rank(card_num, top_discard) and not same_suit(card_num, top_discard):
             return 'stock'
         
         
