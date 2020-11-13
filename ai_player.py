@@ -184,9 +184,6 @@ def discard(hand, last_turn, picked_up_discard_cards, player_position, wildcard_
         if card not in get_arrangement(hand, wildcard_rank):
             discard_cards += [card]
     
-    if len(discard_cards) == 1:
-        return discard_cards[0]
-    
     #list containing "penalty" points associated to the cards that can be discarded
     discard_value = [] 
     for i in range(len(discard_cards)):
