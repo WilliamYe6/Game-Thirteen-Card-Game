@@ -120,6 +120,21 @@ def draw(hand, top_discard, last_turn, picked_up_discard_cards, player_position,
     
     MINIMUM 3 EXAMPLES 
     '''
+    #POSSIBLE SCENARIOS (feel free to add some if I forgot any!):
+    
+        #CASE 1: DRAWING FROM DISCARD PILE:
+    # - If top_discard can complete or help complete an arrangment
+    # - If top_discard == wildcard
+    # - If it is the last round, you have a card in hand worth a lot of points (ex: 10, J, Q, K)
+    #   and top_discard is a card not worth many points (ex: A, 2)
+    
+        #CASE 2: DRAWING FROM STOCK PILE:
+    # - If top_discard can't form seq/group with card(s) from hand
+    # - If it is last round and wildcard cannot form a group/seq with card(s) from hand
+    #   (will be useless in next round)
+    # - If it is last round and top_discard worth a lot of points and can't form seq/group with
+    #   cards from hand
+    
     
     #No cards in the discard pile
     if top_discard == None:
