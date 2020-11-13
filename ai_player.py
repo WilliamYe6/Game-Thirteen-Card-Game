@@ -179,7 +179,7 @@ def discard(hand, last_turn, picked_up_discard_cards, player_position, wildcard_
         
         #the penalty point associated to each card in ours hand that is not apart of an arrangement
         points = [2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 1]
-        discard_value += [points[RANKS.index(get_rank(discard_cards[i]))]] * turn_multiplier
+        discard_value += [points[RANKS.index(get_rank(discard_cards[i]))]* turn_multiplier]
 
         #if player_position != : #to do, if the player is the last player to play before the round ends,
         #then don't care about the following:
