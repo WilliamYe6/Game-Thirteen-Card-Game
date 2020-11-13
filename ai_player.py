@@ -75,8 +75,8 @@ def potential_arrangement(a_hand, wildcard_rank):
                 for n in range(0,4):
                     wanted_cards += [get_card(n, get_rank(a_hand[i]))]
             
-            #if the rank of card1 +- 1 = rank of card2, then cards sequence is formed when a card from the same suit
-            #but with a rank higher than card2 or lower than card 1 is drawn
+            #if the rank of card1 +- 1 = rank of card2, then cards sequence is formed when 
+            #a card from the same suit with a rank higher than card2 or lower than card 1 is drawn
             if abs(a_hand[j] - a_hand[i]) == 4:
                 
                 max_card = max([get_rank(a_hand[j]),get_rank(a_hand[i])])
@@ -88,8 +88,8 @@ def potential_arrangement(a_hand, wildcard_rank):
                 if min_card > 0:
                     wanted_cards += [get_card(get_suit(a_hand[i]), (min_card) - 1)]
             
-            #if the rank of card1 +- 2 = rank of card2, then cards sequence is formed when a card from the same suit
-            #but with a rank higher between card2 and card1 is drawn      
+            #if the rank of card1 +- 2 = rank of card2, then cards sequence is formed when
+            #a card from the same suit with a rank higher between card2 and card1 is drawn      
             if abs(a_hand[j] - a_hand[i]) == 8:
                 max_card = max([get_rank(a_hand[j]),get_rank(a_hand[i])])
                 wanted_cards += [get_card(get_suit(a_hand[i]), max_card - 1)]
@@ -114,9 +114,11 @@ def potential_arrangement(a_hand, wildcard_rank):
 def draw(hand, top_discard, last_turn, picked_up_discard_cards, player_position, wildcard_rank, num_turns_this_round):
     '''(list, int, bool, list, int, int, int) -> str
 
-    This function decides from where to pick up a card: from the discard pile or
-    from the stock. It must return either the string stock or discard. Note that it can only draw from the
-    discard pile if the top_discard card is not None. 
+    This function picks a card from the discard pile and returns 'discard'
+    or picks a card from the stock pile and returns'stock'.
+    It will automatically draw from the stock pile if the top_discard card is None.
+    
+    MINIMUM 3 EXAMPLES 
     '''
     
     #No cards in the discard pile
@@ -145,6 +147,7 @@ def draw(hand, top_discard, last_turn, picked_up_discard_cards, player_position,
 
 def discard(hand, last_turn, picked_up_discard_cards, player_position, wildcard_rank, num_turns_this_round):
     '''(list, bool, list, int, int, int) -> int
+
     This function decides which card to discard from the hand list and returns it.
 
     >>> hand = [10, 49, 50, 51, 52]
@@ -157,6 +160,7 @@ def discard(hand, last_turn, picked_up_discard_cards, player_position, wildcard_
     >>> x
     10
     
+    MINIMUM 2 MORE EXAMPLES NEEDED
     '''
     #a list of cards that can be discarded
     discard_cards = []
@@ -180,12 +184,13 @@ def discard(hand, last_turn, picked_up_discard_cards, player_position, wildcard_
         #the penalty point associated to each card in ours hand that is not apart of an arrangement
         points = [2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 1]
         discard_value += [points[RANKS.index(get_rank(discard_cards[i]))]* turn_multiplier]
-
-        #if player_position != : #to do, if the player is the last player to play before the round ends,
-        #then don't care about the following:
-        #discarding cards in potential_arrangement gives an advantage to other players, thus the penalty value is disminished
+        '''
+        if player_position != : #to do, if the player is the last player to play before the round ends,
+        then don't care about the following:   need to write the code for this - Aashiha&Christine
+        '''
+        #discarding cards in potential_arrangement gives an advantage to other players,
         for others_hand in picked_up_discard_cards:
             if discard_cards[i] in potential_arrangement(others_hand, wildcard_rank):
-                discard_value[i] = discard_value[i] / 2 #TBD
-    
-    return discard_cards[discard_value.index(max(discard_value))] #the card with the highest value will be discarded
+                discard_value[i] = discard_value[i] / 2 #so the penalty value is disminished
+    #the card with the highest value will be discarded
+    return discard_cards[discard_value.index(max(discard_value))] 
