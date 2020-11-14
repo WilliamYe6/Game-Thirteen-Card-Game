@@ -2,6 +2,7 @@
 #Student ID (respectively):
 from card import *
 from arrangement import *
+from game import *
 import doctest
 
 def potential_arrangement(a_hand, wildcard_rank):
@@ -111,22 +112,52 @@ def potential_arrangement(a_hand, wildcard_rank):
     
     return output_list
 
+def single_card_points(card):
+    ''' (int) -> int
+    Returns the points a single card is worth.
+    >>> single_card_points(21)
+    7
+    >>> single_card_points(52)
+    1
+    >>> single_card_points(45)
+    10
+    '''
+    if get_rank(card) in RANKS[:8]:
+        return get_rank(card) + 2
+    elif get_rank(card) in RANKS[8:12]:
+        return 10
+    elif get_rank(card) in RANKS[12:]:
+        return 1
+
+
 def draw(hand, top_discard, last_turn, picked_up_discard_cards, player_position, wildcard_rank, num_turns_this_round):
     '''(list, int, bool, list, int, int, int) -> str
 
     This function picks a card from the discard pile and returns 'discard'
-    or picks a card from the stock pile and returns'stock'.
+    or picks a card from the stock pile and returns 'stock'.
     It will automatically draw from the stock pile if the top_discard card is None.
     
-    MINIMUM 3 EXAMPLES 
+    MINIMUM 3 EXAMPLES
+    >>> draw([1, 2, 3, 47, 48], None, False, [3, 6, 19, 4], 2, 5, 4)
+    'stock'
+    >>> draw([1, 2, 3, 47, 48], 22, False, [3, 6, 19, 4], 2, 5, 4)
+    'discard'
+    >>> draw([1, 2, 3, 47, 48], 38, False, [3, 6, 19, 4], 2, 5, 4)
+    'stock'
+    >>> draw([1, 2, 3, 38, 51], 4, False, [3, 6, 19, 4], 2, 5, 4)
+    'discard'
+    >>> draw([1, 2, 3, 4, 48], 24, True, [3, 6, 19, 4], 2, 5, 4)
+    'discard'
+    >>> draw([1, 2, 3, 4, 24], 48, True, [3, 6, 19, 4], 2, 5, 4)
+    'stock'
     '''
     #POSSIBLE SCENARIOS (feel free to add some if I forgot any!):
     
         #CASE 1: DRAWING FROM DISCARD PILE:
     # x If top_discard can complete or help complete an arrangment
     # x If top_discard == wildcard
-    # Julia - If it is the last round, you have a card in hand worth a lot of points (ex: 10, J, Q, K)
-    #   and top_discard is a card not worth many points (ex: A, 2)
+    # x - If it is the last round, you have a card in hand worth a lot of points (ex: 10, J, Q, K)
+    #   and top_discard is a card worth less points (ex: A, 2)
     
         #CASE 2: DRAWING FROM STOCK PILE:
     # x If top_discard can't form seq/group with card(s) from hand
@@ -135,32 +166,39 @@ def draw(hand, top_discard, last_turn, picked_up_discard_cards, player_position,
     # David - If it is last round and top_discard worth a lot of points and can't form seq/group with
     #         cards from hand
     
-    #No cards in the discard pile
+    #CONDITION 1: No cards in the discard pile
     if top_discard == None:
         return 'stock'
     
-    #Top card of discard pile is of the same rank as the wildcard
-    if get_rank(top_discard) == wildcard_rank:
+    #CONDITION 2: Top card of discard pile is of the same rank as the wildcard
+    if get_rank(top_discard) == wildcard_rank and not last_turn:
         return 'discard'
     
-    #PUT THIS IN THE END SINCE IT HAS AN ELSE STATEMENT!!!
-    #if the top card on the discard pile can form an arrangement
-    if top_discard in potential_arrangement(hand, wildcard_rank):
-        return 'discard'
-    else:
+    #CONDITION 3: Not last turn and top card of discard pile doesn't form any arrangement
+    if not last_turn and top_discard not in potential_arrangement(hand, wildcard_rank):
         return 'stock'
     
-    #Iterating through each card in the hand and comparing to top discard card
-    #Needs editing because some of it is wrong (will do it later today - Julia)
-    for card_num in hand:
-        #if same_rank(card_num, top_discard) or same_suit(card_num, top_discard):
-            #return 'discard'
+    
+    #PUT THIS IN THE END SINCE IT HAS AN ELSE STATEMENT!!!
+    #****** Changed for a for loop instead (if conditions are not met, it will return stock so acts
+    #like an else statement, hope that's okay! - Julia)
+    
+    #Iterating through each card of the hand
+    for card in range(len(hand)):
         
-        if last_turn and get_rank(top_discard) in RANKS[8:12] and not same_rank(card_num, top_discard) and not same_suit(card_num, top_discard):
-            return 'stock'
+        #Top card on discard pile can form an arrangement
+        if top_discard in potential_arrangement(hand, wildcard_rank):
+            return 'discard'
         
+        #If it is the last turn and one card from the hand can't form an arrangement and is worth
+        #more points than the top card on the discard pile (pick up card from discard pile and
+        #discard the card that is worth more points)
+        elif (last_turn and hand[card] not in potential_arrangement(hand, wildcard_rank) and
+              single_card_points(top_discard)<single_card_points(hand[card])):
+            return 'discard'
         
-#draw([1,2,35, 47, 48], 45, True, [3,6,19,4], 2, 5, 4) Testing (should be discard but gives stock)
+    return 'stock' #If no card from hand match these conditions, pick from stock pile
+
 
 def discard(hand, last_turn, picked_up_discard_cards, player_position, wildcard_rank, num_turns_this_round):
     '''(list, bool, list, int, int, int) -> int
