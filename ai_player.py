@@ -123,18 +123,17 @@ def draw(hand, top_discard, last_turn, picked_up_discard_cards, player_position,
     #POSSIBLE SCENARIOS (feel free to add some if I forgot any!):
     
         #CASE 1: DRAWING FROM DISCARD PILE:
-    # - If top_discard can complete or help complete an arrangment
-    # - If top_discard == wildcard
-    # - If it is the last round, you have a card in hand worth a lot of points (ex: 10, J, Q, K)
+    # x If top_discard can complete or help complete an arrangment
+    # x If top_discard == wildcard
+    # Julia - If it is the last round, you have a card in hand worth a lot of points (ex: 10, J, Q, K)
     #   and top_discard is a card not worth many points (ex: A, 2)
     
         #CASE 2: DRAWING FROM STOCK PILE:
-    # - If top_discard can't form seq/group with card(s) from hand
-    # - If it is last round and wildcard cannot form a group/seq with card(s) from hand
-    #   (will be useless in next round)
-    # - If it is last round and top_discard worth a lot of points and can't form seq/group with
-    #   cards from hand
-    
+    # x If top_discard can't form seq/group with card(s) from hand
+    # William - If it is last round and wildcard cannot form a group/seq with card(s) from hand
+    #           (will be useless in next round)
+    # David - If it is last round and top_discard worth a lot of points and can't form seq/group with
+    #         cards from hand
     
     #No cards in the discard pile
     if top_discard == None:
@@ -144,9 +143,12 @@ def draw(hand, top_discard, last_turn, picked_up_discard_cards, player_position,
     if get_rank(top_discard) == wildcard_rank:
         return 'discard'
     
+    #PUT THIS IN THE END SINCE IT HAS AN ELSE STATEMENT!!!
     #if the top card on the discard pile can form an arrangement
     if top_discard in potential_arrangement(hand, wildcard_rank):
         return 'discard'
+    else:
+        return 'stock'
     
     #Iterating through each card in the hand and comparing to top discard card
     #Needs editing because some of it is wrong (will do it later today - Julia)
@@ -191,11 +193,11 @@ def discard(hand, last_turn, picked_up_discard_cards, player_position, wildcard_
         #if it is the last turn, it is more important to discard higher value cards
         turn_multiplier = 1
         if last_turn:
-            turn_multiplier = 3
+            turn_multiplier = 3 #TBF*************
         
-        #the penalty point associated to each card in ours hand that is not apart of an arrangement
+        #the penalty point associated to each card in ours hand that is not a part of an arrangement
         points = [2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 1]
-        discard_value += [points[RANKS.index(get_rank(discard_cards[i]))]* turn_multiplier]
+        discard_value += [points[RANKS.index(get_rank(discard_cards[i]))]*turn_multiplier]
         '''
         if player_position != : #to do, if the player is the last player to play before the round ends,
         then don't care about the following:   need to write the code for this - Aashiha&Christine
@@ -203,6 +205,8 @@ def discard(hand, last_turn, picked_up_discard_cards, player_position, wildcard_
         #discarding cards in potential_arrangement gives an advantage to other players,
         for others_hand in picked_up_discard_cards:
             if discard_cards[i] in potential_arrangement(others_hand, wildcard_rank):
-                discard_value[i] = discard_value[i] / 2 #so the penalty value is disminished
+                discard_value[i] = discard_value[i] / 2 #TBF********** #so the penalty value is disminished
+                
     #the card with the highest value will be discarded
-    return discard_cards[discard_value.index(max(discard_value))] 
+    return discard_cards[discard_value.index(max(discard_value))]
+
