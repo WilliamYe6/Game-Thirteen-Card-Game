@@ -2,7 +2,6 @@
 #Student ID (respectively):
 from card import *
 from arrangement import *
-from game import *
 import doctest
 
 def potential_arrangement(a_hand, wildcard_rank):
