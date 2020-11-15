@@ -111,6 +111,82 @@ def complete_arrangement(a_hand, wildcard_rank):
     
     return output_list
 
+def second_best_draw(hand,wildcard_rank):
+    """(list,int,int)-->list
+    If there is no arrangement to be made, given the hand, the card
+    at the top of the discard pile, and the wildcard rank, the function
+    will return of the next most useful cards for the function to pick up.
+    """
+    #cards that could be useful for the person to pick up
+    useful_cards=[]
+    
+    #The deck of total cards
+    deck=get_deck()
+    
+    #all cards that are wildcard ranks for the turn 
+    for i in range(len(deck)):
+        
+        if (get_rank(deck[i])==wildcard_rank) and (deck[i] not in hand):
+            
+            useful_cards.append(deck[i])
+            
+        else:
+            
+            continue
+            
+    #cards of same rank but different suit (group)
+            
+    for i in range(len(deck)):
+        
+        x=get_rank(deck[i])
+        
+        for j in range(len(hand)):
+            
+            y=get_rank(hand[j])
+            
+            if (x==y) and (deck[i] not in hand):
+                
+                useful_cards.append(deck[i])
+                
+            else:
+                
+                continue
+            
+    #same suit but one or two difference in rank (sequence)
+            
+    for i in range(len(deck)):
+        
+        for j in range(len(hand)):
+            
+            if same_suit(deck[i],hand[j]):
+                
+                x=get_rank(deck[i])
+                
+                y=get_rank(hand[j])
+                
+                diff_in_ranks = abs(x - y)
+                
+                if (diff_in_ranks==1)or(diff_in_ranks==2) and (deck[i] not in hand):
+                        
+                    useful_cards.append(deck[i])
+                        
+                        
+                else:
+                    
+                    continue
+                
+    #Getting rid of duplicates and ordering
+                
+    for i in useful_cards:
+        
+        if useful_cards.count(i)>1:
+            
+            useful_cards.remove(i)
+            
+    useful_cards.sort()
+    
+    return useful_cards
+
 def single_card_points(card):
     ''' (int) -> int
     Returns the points a single card is worth.
