@@ -219,7 +219,7 @@ def discard(hand, last_turn, picked_up_discard_cards, player_position, wildcard_
     discard_cards = []
     for card in hand:
         #cards in our hand that are not part of a sequence nor a group
-        if card not in get_arrangement(tuple(hand), wildcard_rank):  #and not potential_arrangement
+        if card not in get_arrangement(hand, wildcard_rank):  #and not potential_arrangement*********************tuple(hand)
             discard_cards += [card]
     
     #list containing "penalty" points associated to the cards that can be discarded
