@@ -177,6 +177,11 @@ def draw(hand, top_discard, last_turn, picked_up_discard_cards, player_position,
     if not last_turn and top_discard not in potential_arrangement(hand, wildcard_rank):
         return 'stock'
     
+    #WILL'S added part
+    # CONDITION 4: If it is last round and wildcard cannot form a group/seq with card(s) from hand
+    if (last_round) and (potential_arragement(hand, wildcard_rank) == hand) and ((top_discard not in potential_arrangement(hand, wildcard_rank))):
+        return 'stock'
+    
     
     #PUT THIS IN THE END SINCE IT HAS AN ELSE STATEMENT!!!
     #****** Changed for a for loop instead (if conditions are not met, it will return stock so acts
@@ -188,6 +193,8 @@ def draw(hand, top_discard, last_turn, picked_up_discard_cards, player_position,
         #Top card on discard pile can form an arrangement
         if top_discard in potential_arrangement(hand, wildcard_rank):
             return 'discard'
+        
+        
         
         #If it is the last turn and one card from the hand can't form an arrangement and is worth
         #more points than the top card on the discard pile (pick up card from discard pile and
