@@ -31,6 +31,9 @@ def same_color_suit(card1, card2):
 def get_card(suit, rank):
     return (RANKS.index(rank) * 4) + SUITS.index(suit) + 1
 
+CARDS_OF_RANK = [[get_card(suit, rank) for suit in SUITS] for rank in RANKS]
+CARDS_OF_SUIT = [[get_card(suit, rank) for rank in RANKS] for suit in SUITS]
+
 def card_to_string(card):
     return "{} of {}".format(RANKS_STR[get_rank(card)].upper(), SUITS_STR[get_suit(card)].upper())
 
@@ -60,9 +63,5 @@ def all_same_suit(cards):
     return True
 
 def all_same_rank(cards):
-    i = 1
-    while i < len(cards):
-        if not same_rank(cards[i-1], cards[i]):
-            return False
-        i += 1
-    return True
+    rank = get_rank(cards[0])
+    return all(card in CARDS_OF_RANK[rank] for card in cards)

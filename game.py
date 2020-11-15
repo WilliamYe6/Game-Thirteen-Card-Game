@@ -5,6 +5,9 @@ from collections import defaultdict
 #seed(1337)
 MAX_NUM_TURNS_PER_PLAYER = 3000
 
+class ThreeThirteenError(Exception):
+    pass
+
 def calculate_winner(points):
     winners = []
     min_score = min(points)
@@ -29,6 +32,7 @@ def get_starting_hands(deck, num_players, num_cards):
     return hands
 
 def round_end(player_names, hands, current_points):
+    clear_caches()
     round_points = []
     for hand in hands:
         round_points.append(calculate_round_points(hand))
@@ -45,16 +49,17 @@ def round_end(player_names, hands, current_points):
         print(player, "\t", score)
 
 def player_turn(player, player_name, player_index, hand, discard_pile, stock, winning_player, picked_up_discard_cards, wildcard_rank, num_turns_this_round):
-    assert len(discard_pile) > 0
+    #assert len(discard_pile) > 0
 
     print("Player " + str(player_index) + " (" + player_name + ")'s turn")
     #print("Hand:", hand_to_string(hand))
-    assert len(hand) > 0
+    #assert len(hand) > 0
     print("Top card of discard pile:", card_to_string(discard_pile[-1]))
     
     # Step 1: Draw
     draw_location = player.draw(hand[:], discard_pile[-1], winning_player>-1, picked_up_discard_cards, player_index, wildcard_rank, num_turns_this_round)
-    assert draw_location in ['stock', 'discard']
+    if draw_location not in ['stock', 'discard']:
+        raise ThreeThirteenError("draw function did not return 'stock' or 'discard'.")
 
     if draw_location == 'stock':
         if len(stock) == 0:
@@ -72,13 +77,15 @@ def player_turn(player, player_name, player_index, hand, discard_pile, stock, wi
 
     # Step 2: Discard
     card = player.discard(hand[:], winning_player>-1, picked_up_discard_cards, player_index, wildcard_rank, num_turns_this_round)
-    assert card in hand
+    if card not in hand:
+        raise ThreeThirteenError("discard function did not return one of the cards in the hand")
     hand.remove(card)
     discard_pile.append(card)
     print("Player discards the", card_to_string(card))
 
     # Step 3: Check if player has gone out
     arrangement = get_arrangement(hand[:], wildcard_rank)
+    #print("Best arrangement:", arrangement_to_string(arrangement))
     if is_valid_arrangement(arrangement, hand, wildcard_rank):
         print("Player announced they have gone out.")
         print("  Their hand contains:", hand_to_string(hand))
