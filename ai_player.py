@@ -195,6 +195,11 @@ def draw(hand, top_discard, last_turn, picked_up_discard_cards, player_position,
               single_card_points(top_discard)<single_card_points(hand[card])):
             return 'discard'
         
+        #If it is last round and top_discard worth a lot of points and can't form seq/group with cards from hand
+        elif (last_turn) and (single_card_points(top_discard)==10) and (top_discard not in potential_arrangement(hand,wildcard_rank)):
+            
+            return "stock"
+        
     return 'stock' #If no card from hand match these conditions, pick from stock pile
 
 
