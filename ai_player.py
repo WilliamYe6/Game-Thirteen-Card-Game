@@ -284,7 +284,7 @@ def discard(hand, last_turn, picked_up_discard_cards, player_position, wildcard_
         #if it is the last turn, it is more important to discard higher value cards
         turn_multiplier = 1
         if last_turn:
-            turn_multiplier = 3 
+            turn_multiplier = 3
         
         #the penalty point associated to each card in ours hand that is not a part of an arrangement
         points = [2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 1]
