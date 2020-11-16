@@ -6,7 +6,6 @@ import doctest
 
 def complete_arrangement(a_hand, wildcard_rank):
     '''(list, int) -> list
-
     Given a hand, returns a list of the cards that could potentially complete an arrangement if added to hand.
     
     >>> complete_arrangement([1, 5, 9, 13], 10) #wildcard not involved, 1 seq 
@@ -136,9 +135,8 @@ def second_best_draw(hand, wildcard_rank):
     
     #all cards that are wildcard ranks for the turn 
     for i in range(len(deck)):
-        
+    
         if (get_rank(deck[i]) == wildcard_rank) and (deck[i] not in hand):
-            
             useful_cards.append(deck[i])
            
     #cards of same rank but different suit (group)
@@ -147,11 +145,9 @@ def second_best_draw(hand, wildcard_rank):
         x = get_rank(deck[i])
         
         for j in range(len(hand)):
-            
             y=get_rank(hand[j])
             
             if (x==y) and (deck[i] not in hand):
-                
                 useful_cards.append(deck[i])
             
     #same suit but one or two difference in rank (sequence)
@@ -160,15 +156,11 @@ def second_best_draw(hand, wildcard_rank):
         for j in range(len(hand)):
             
             if same_suit(deck[i],hand[j]):
-                
                 x = get_rank(deck[i])
-                
                 y = get_rank(hand[j])
-                
                 diff_in_ranks = abs(x - y)
                 
                 if (diff_in_ranks <= int((2/3)*wildcard_rank)) and (deck[i] not in hand):
-                    
                     useful_cards.append(deck[i])
           
     #Getting rid of duplicates and ordering
@@ -180,7 +172,6 @@ def second_best_draw(hand, wildcard_rank):
     useful_cards.sort()
     
     return useful_cards
-
 
 def single_card_points(card):
     ''' (int) -> int
@@ -245,7 +236,6 @@ def draw(hand, top_discard, last_turn, picked_up_discard_cards, player_position,
         else:
             return 'stock'
 
-
 def discard(hand, last_turn, picked_up_discard_cards, player_position, wildcard_rank, num_turns_this_round):
     '''(list, bool, list, int, int, int) -> int
 
@@ -276,15 +266,17 @@ def discard(hand, last_turn, picked_up_discard_cards, player_position, wildcard_
     '''
     #a list of cards that can be discarded
     discard_cards = []
+    
+    #making a list from the get arrangement tuple of tuple
+    get_arrangement_list = []
+    for tuples in get_arrangement(tuple(hand), wildcard_rank):
+        get_arrangement_list += list(tuples)
+    
     for card in hand:
         #cards in our hand that are not part of a sequence nor a group
-        if card not in get_arrangement(tuple(hand), wildcard_rank):
+        if card not in get_arrangement_list and card not in second_best_draw(hand, wildcard_rank):
             discard_cards += [card]
-    #return discard_cards
-
-discard([45, 46, 47, 8], False, [], 4, 5, 7)
-
-    '''
+    
     #list containing "penalty" points associated to the cards that can be discarded
     discard_value = [] 
     for i in range(len(discard_cards)):
@@ -307,6 +299,11 @@ discard([45, 46, 47, 8], False, [], 4, 5, 7)
                 
     #the card with the highest value will be discarded
     return discard_cards[discard_value.index(max(discard_value))]
-    '''
 doctest.testmod()
-     
+
+'''hand = [45, 46, 47, 8]
+last_turn = False
+picked_up_discard_cards = []
+player_position = 4
+wildcard_rank = 5
+num_turns_this_round = 7'''
