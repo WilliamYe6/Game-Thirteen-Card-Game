@@ -1,12 +1,12 @@
-# v5
-# November 13
+# v6
+# November 14
 
 from game import main
 from importlib import util
 
 if __name__ == '__main__':
     # load players
-    player_modules = ['random_player', 'random_player']
+    player_modules = ['random_player', 'random_player', 'ai_player','random_player']
     players = []
     for player_module in player_modules:
         spec = util.spec_from_file_location("module.name", player_module + ".py")

@@ -1,9 +1,8 @@
+import random
 from card import *
 from arrangement import *
-from random import seed, shuffle
-from collections import defaultdict
-#seed(1337)
-MAX_NUM_TURNS_PER_PLAYER = 3000
+#random.seed(1337)
+MAX_NUM_TURNS_PER_PLAYER = 500
 
 class ThreeThirteenError(Exception):
     pass
@@ -32,7 +31,6 @@ def get_starting_hands(deck, num_players, num_cards):
     return hands
 
 def round_end(player_names, hands, current_points):
-    clear_caches()
     round_points = []
     for hand in hands:
         round_points.append(calculate_round_points(hand))
@@ -66,7 +64,7 @@ def player_turn(player, player_name, player_index, hand, discard_pile, stock, wi
             print("Reshuffling stock pile")
             stock.clear()
             stock.extend(discard_pile)
-            shuffle(stock)
+            random.shuffle(stock)
             discard_pile.clear()
         hand.append(stock.pop())
     elif draw_location == 'discard':
@@ -84,9 +82,9 @@ def player_turn(player, player_name, player_index, hand, discard_pile, stock, wi
     print("Player discards the", card_to_string(card))
 
     # Step 3: Check if player has gone out
-    arrangement = get_arrangement(hand[:], wildcard_rank)
+    arrangement = get_arrangement(tuple(sorted(hand)), wildcard_rank)
     #print("Best arrangement:", arrangement_to_string(arrangement))
-    if is_valid_arrangement(arrangement, hand, wildcard_rank):
+    if is_valid_arrangement(arrangement, tuple(hand), wildcard_rank):
         print("Player announced they have gone out.")
         print("  Their hand contains:", hand_to_string(hand))
         print("  They have arranged their hand as follows:\n", arrangement_to_string(arrangement))
@@ -108,11 +106,11 @@ def main(players, display_gui):
     max_turns_per_round = MAX_NUM_TURNS_PER_PLAYER * len(players)
     
     total_scores = [0] * len(players)
-    for rnd in range(1, 12): # 11 rounds
+    for rnd in range(1, 11): #12): # 11 rounds -> 10 rounds to make it faster
         print("\n\nStarting round " + str(rnd) + " (" + str(rnd+2) + " cards per player)")
         
         deck = get_deck() + get_deck()
-        shuffle(deck)
+        random.shuffle(deck)
         
         # deal cards to each player, removing them from deck
         hands = get_starting_hands(deck, len(players), rnd+2)
@@ -160,7 +158,7 @@ def main(players, display_gui):
         
         # arrange players' hands as much as possible
         for cur_player in range(len(players)):
-            arrangement = get_arrangement(hands[cur_player][:], wildcard_rank)
+            arrangement = get_arrangement(tuple(sorted(hands[cur_player])), wildcard_rank)
             # remove all arranged cards from their hand
             for seq in arrangement:
                 for card in seq:

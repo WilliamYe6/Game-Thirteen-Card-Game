@@ -55,13 +55,9 @@ def get_deck():
     return deck
 
 def all_same_suit(cards):
-    i = 1
-    while i < len(cards):
-        if not same_suit(cards[i-1], cards[i]):
-            return False
-        i += 1
-    return True
+    suit = get_suit(cards[0])
+    return all((card - 1) % 4 == suit for card in cards[1:])
 
 def all_same_rank(cards):
     rank = get_rank(cards[0])
-    return all(card in CARDS_OF_RANK[rank] for card in cards)
+    return all((card - 1) // 4 == rank for card in cards[1:])
