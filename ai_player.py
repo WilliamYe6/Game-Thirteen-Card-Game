@@ -7,7 +7,7 @@ import doctest
 def complete_arrangement(a_hand, wildcard_rank):
     '''(list, int) -> list
 
-    Given a hand, returns a list of the cards that could potentially complete an arrangement.
+    Given a hand, returns a list of the cards that could potentially complete an arrangement if added to hand.
     
     >>> complete_arrangement([1, 5, 9, 13], 10) #wildcard not involved, 1 seq 
     [1, 5, 9, 13, 17]
