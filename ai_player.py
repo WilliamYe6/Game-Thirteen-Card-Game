@@ -214,11 +214,7 @@ def draw(hand, top_discard, last_turn, picked_up_discard_cards, player_position,
     #When it is last turn
     if last_turn:
         
-<<<<<<< HEAD
         #If the top_discard card can form an arrangement or its penalty points are low, take it
-=======
-        #If it is last turn and top_discard card can form an arrangement or its penalty points are low, take it
->>>>>>> 74b77482df94a53139f1ef3cc65df18ba36a7c88
         if top_discard in complete_arrangement(hand, wildcard_rank) or single_card_points(top_discard) < 8:
             return 'discard'
         #else, there is a 50% chances of picking a low penalty point card in the stock pile in a complete deck
