@@ -218,7 +218,7 @@ def draw(hand, top_discard, last_turn, picked_up_discard_cards, player_position,
     if last_turn:
         
         #If it is last turn and top_discard card can form an arrangement or its penalty points are low, take it
-        if top_discard in complete_arrangement(hand, wildcard_rank) or single_card_points(top_discard)<8:
+        if top_discard in complete_arrangement(hand, wildcard_rank) or single_card_points(top_discard) < 8:
             return 'discard'
         
         else:
