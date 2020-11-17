@@ -289,14 +289,7 @@ def discard(hand, last_turn, picked_up_discard_cards, player_position, wildcard_
         for i in range(len(hand)):
             if (get_rank(hand[i]) != wildcard_rank) and (get_rank(hand[i]) not in (rank_of_hand[:i] + rank_of_hand[(i + 1):])):
                 discard_cards += [hand[i]]
-<<<<<<< HEAD
-                
-    print(rank_of_hand, discard_cards, get_rank(hand[0]), rank_of_hand[:0] + rank_of_hand[(0 + 1):])                
-=======
-                #print(discard_cards) *****This shows that every card from hand is included in the discard_cards variable******
-                #************************************Need to change something here!********************************************
-                    
->>>>>>> dff21cf2382c938a552a9bd9331b64fb7fe2cf18
+                                    
     #if all the potential arrangement are groups, then any card could be discarded
     if len(discard_cards) == 0:
         for card in hand:
