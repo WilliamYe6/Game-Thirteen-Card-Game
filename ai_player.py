@@ -119,8 +119,8 @@ def second_best_draw(hand, wildcard_rank):
     >>> second_best_draw([9, 22, 43, 28], 4)
     [1, 5, 10, 11, 12, 13, 14, 17, 18, 19, 20, 21, 23, 24, 25, 26, 27, 30, 32, 35, 36, 39, 41, 42, 44, 47, 51]
     
-    >>> second_best_draw([, wildcard_rank)
-    
+    >>> second_best_draw([12, 33, 24, 40, 39], 5)
+    [4, 8, 9, 10, 11, 12, 16, 17, 20, 21, 22, 23, 24, 25, 27, 28, 29, 31, 32, 34, 35, 36, 37, 38, 39, 40, 40, 41, 43, 44, 45, 47, 48, 49, 51, 52]
     
     """
     #cards that could be useful for the person to pick up
@@ -289,8 +289,14 @@ def discard(hand, last_turn, picked_up_discard_cards, player_position, wildcard_
         for i in range(len(hand)):
             if (get_rank(hand[i]) != wildcard_rank) and (get_rank(hand[i]) not in (rank_of_hand[:i] + rank_of_hand[(i + 1):])):
                 discard_cards += [hand[i]]
+<<<<<<< HEAD
                 
     print(rank_of_hand, discard_cards, get_rank(hand[0]), rank_of_hand[:0] + rank_of_hand[(0 + 1):])                
+=======
+                #print(discard_cards) *****This shows that every card from hand is included in the discard_cards variable******
+                #************************************Need to change something here!********************************************
+                    
+>>>>>>> dff21cf2382c938a552a9bd9331b64fb7fe2cf18
     #if all the potential arrangement are groups, then any card could be discarded
     if len(discard_cards) == 0:
         for card in hand:
