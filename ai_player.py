@@ -263,7 +263,7 @@ def discard(hand, last_turn, picked_up_discard_cards, player_position, wildcard_
     discard_cards = []
     
     #making a list from the get arrangement tuple of tuple
-    get_arrangement_list = []
+    '''get_arrangement_list = []
     for tuples in get_arrangement(tuple(hand), wildcard_rank):
         get_arrangement_list += list(tuples)
     
@@ -277,17 +277,20 @@ def discard(hand, last_turn, picked_up_discard_cards, player_position, wildcard_
         #in a normal turn, cards in our hand that are not part of a sequence nor a group
         #and cards that cannot help us form a sequence or a group are useless
             if card not in get_arrangement_list and card not in second_best_draw(hand, wildcard_rank):
-                discard_cards += [card]
-    
+                discard_cards += [card]'''
+    print(discard_cards)
     #if no card is useless, the priority is to form groups
     #because there is a higher chance of forming a group than a sequence
     if len(discard_cards) == 0:
         rank_of_hand = []
         for i in range(len(hand)):
             rank_of_hand += [get_rank(hand[i])]
-            if (get_rank(hand[i]) != wildcard_rank) or (get_rank(hand[i]) not in (rank_of_hand[:i] + rank_of_hand[(i + 1):])):
+            
+        for i in range(len(hand)):
+            if (get_rank(hand[i]) != wildcard_rank) and (get_rank(hand[i]) not in (rank_of_hand[:i] + rank_of_hand[(i + 1):])):
                 discard_cards += [hand[i]]
-                    
+                
+    print(rank_of_hand, discard_cards, get_rank(hand[0]), rank_of_hand[:0] + rank_of_hand[(0 + 1):])                
     #if all the potential arrangement are groups, then any card could be discarded
     if len(discard_cards) == 0:
         for card in hand:
