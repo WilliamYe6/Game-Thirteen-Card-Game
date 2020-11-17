@@ -207,13 +207,16 @@ def draw(hand, top_discard, last_turn, picked_up_discard_cards, player_position,
     
     print('Hand:', hand_to_string(hand))
     
+    get_arrangement_list = []
+    for tuples in get_arrangement(tuple(hand), wildcard_rank):
+        get_arrangement_list += list(tuples)
+    
     #No cards in the discard pile
     if top_discard == None:
         return 'stock'
     
     #When it is last turn
     if last_turn:
-        
         #If the top_discard card can form an arrangement or its penalty points are low, take it
         if top_discard in complete_arrangement(hand, wildcard_rank) or single_card_points(top_discard) < 8:
             return 'discard'
@@ -225,7 +228,7 @@ def draw(hand, top_discard, last_turn, picked_up_discard_cards, player_position,
         #calculate the nb of useless cards
         to_discard = []
         for card in hand:
-            if card not in get_arrangement(hand, wildcard_rank):
+            if card not in get_arrangement_list:
                 to_discard += card
         
         #if there is only one useless card, do not consider it for forming an arrangement or a second_best draw
@@ -275,7 +278,6 @@ def discard(hand, last_turn, picked_up_discard_cards, player_position, wildcard_
     get_arrangement_list = []
     for tuples in get_arrangement(tuple(hand), wildcard_rank):
         get_arrangement_list += list(tuples)
-        
     
     for card in hand:
         #when its the last turn, 
@@ -290,7 +292,7 @@ def discard(hand, last_turn, picked_up_discard_cards, player_position, wildcard_
                 discard_cards += [card]
     
     #if no card is useless, the priority is to form groups
-    #because there is a higher chance of forming a group rather than a sequence
+    #because there is a higher chance of forming a group than a sequence
     if len(discard_cards) == 0:
         rank_of_hand = []
         for i in range(len(hand)):
