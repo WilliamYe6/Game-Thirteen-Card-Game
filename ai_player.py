@@ -1,5 +1,6 @@
 #Authors: Aashiha Babu, Julia Kulenty, David Paquette, Christine Yang-Dai, William Ye
-#Student ID (respectively):
+#Student ID (respectively): 260989542, 260989124, 260870988, 260990057, 260982747
+
 from card import *
 from arrangement import *
 import doctest
@@ -36,7 +37,7 @@ def complete_arrangement(a_hand, wildcard_rank):
     [20]
 
     >>> complete_arrangement([16, 24, 33, 47], 11) #wildcard involved, 1 potential seq (16 & 24)
-    [12, 13, 14, 15, 16, 20, 21, 22, 23, 24, 28, 29, 33, 34, 35, 36, 37, 43, 45, 46, 47, 48, 51]***************************************
+    [12, 13, 14, 15, 16, 20, 21, 22, 23, 24, 28, 29, 33, 34, 35, 36, 37, 43, 45, 46, 47, 48, 51]
 
     >>> complete_arrangement([16, 24, 33, 12], 8) #wildcard involved, multiple potential seq (16, 24, 12)
     [8, 9, 10, 11, 12, 13, 14, 15, 16, 20, 21, 22, 23, 24, 28, 29, 33, 34, 35, 36, 37]
@@ -120,7 +121,7 @@ def second_best_draw(hand, wildcard_rank):
     [1, 5, 10, 11, 12, 13, 14, 17, 18, 19, 20, 21, 23, 24, 25, 26, 27, 30, 32, 35, 36, 39, 41, 42, 44, 47, 51]
     
     >>> second_best_draw([12, 33, 24, 40, 39], 5)
-    [4, 8, 9, 10, 11, 12, 16, 17, 20, 21, 22, 23, 24, 25, 27, 28, 29, 31, 32, 34, 35, 36, 37, 38, 39, 40, 40, 41, 43, 44, 45, 47, 48, 49, 51, 52]
+    [4, 8, 9, 10, 11, 16, 20, 21, 22, 23, 25, 28, 29, 31, 32, 34, 35, 36, 37, 38, 39, 40, 41, 43, 44, 47, 48]
     
     """
     #cards that could be useful for the person to pick up
@@ -153,7 +154,7 @@ def second_best_draw(hand, wildcard_rank):
                 y = get_rank(hand[j])
                 diff_in_ranks = abs(x - y)
                 
-                if (diff_in_ranks == 1) and (deck[i] != hand[j]):
+                if (diff_in_ranks <= 2) and (deck[i] != hand[j]):
                     useful_cards.append(deck[i])
           
     #Getting rid of duplicates and ordering  
@@ -168,7 +169,9 @@ def second_best_draw(hand, wildcard_rank):
 
 def single_card_points(card):
     ''' (int) -> int
+
     Returns the points a single card is worth.
+    
     >>> single_card_points(21)
     7
     >>> single_card_points(52)
@@ -178,8 +181,10 @@ def single_card_points(card):
     '''
     if get_rank(card) in RANKS[:8]:
         return get_rank(card) + 2
+    
     elif get_rank(card) in RANKS[8:12]:
         return 10
+    
     elif get_rank(card) in RANKS[12:]:
         return 1
 
@@ -188,7 +193,7 @@ def draw(hand, top_discard, last_turn, picked_up_discard_cards, player_position,
 
     This function picks a card from the discard pile and returns 'discard'
     or picks a card from the stock pile and returns 'stock'.
-    It will automatically draw from the stock pile if the top_discard card is None.
+    It will automatically draw from the stock pile if there is no card in the discard pile.
     
     >>> draw([1, 2, 3, 47, 48], None, False, [3, 6, 19, 4], 2, 5, 4)
     'stock'
@@ -203,11 +208,12 @@ def draw(hand, top_discard, last_turn, picked_up_discard_cards, player_position,
     >>> draw([1, 2, 3, 4, 24], 48, True, [3, 6, 19, 4], 2, 5, 4)
     'stock'
     >>> draw([37, 10, 35], 21, False, [], 0, 3, 0)
+    'stock'
+    
     '''
-    
-    print('Hand:', hand_to_string(hand))
-    
+        
     get_arrangement_list = []
+    
     for tuples in get_arrangement(tuple(hand), wildcard_rank):
         get_arrangement_list += list(tuples)
     
@@ -223,6 +229,7 @@ def draw(hand, top_discard, last_turn, picked_up_discard_cards, player_position,
         #else, there is a 50% chances of picking a low penalty point card in the stock pile in a complete deck
         else:
             return 'stock'
+        
     #when it is not the last turn    
     else:
         
@@ -231,10 +238,25 @@ def draw(hand, top_discard, last_turn, picked_up_discard_cards, player_position,
         for card in hand:
             if card not in get_arrangement_list:
                 discard_cards += [card]
-        
+                
+        #If no card is useless, the priority is to form groups
+        #because there is a higher probability of forming a group than a sequence
+        if len(discard_cards) == 0:
+            
+            hand += [top_discard_card]
+            rank_of_hand = []
+            
+            for i in range(len(hand)):
+                rank_of_hand += [get_rank(hand[i])]
+                
+            for i in range(len(hand)):
+                if (get_rank(hand[i]) != wildcard_rank) and (get_rank(hand[i]) not in (rank_of_hand[:i] + rank_of_hand[(i + 1):])):
+                    discard_cards += [hand[i]]
+            
         #If there is only one card left to discard and the top_discard does not add to an exisiting arrangement
-        if len(discard_cards) == 1 and top_discard not in complete_arrangement(hand, wildcard_rank):
+        elif len(discard_cards) == 1 and top_discard not in complete_arrangement(hand, wildcard_rank):
             return 'stock'
+        
         #Not last turn and top card of discard pile is of the same rank as the wildcard OR
         #Not last turn and top card of discard pile forms an arrangement OR
         #Not last turn and top card of discard pile will form an arrangement then pick from discard pile
@@ -243,8 +265,10 @@ def draw(hand, top_discard, last_turn, picked_up_discard_cards, player_position,
         else:
             return 'stock'
 
+
 def discard(hand, last_turn, picked_up_discard_cards, player_position, wildcard_rank, num_turns_this_round):
-    '''(list, bool, list, int, int, int) -> int
+    '''
+    (list, bool, list, int, int, int) -> int
 
     This function decides which card to discard from the hand list and returns it.
 
@@ -252,7 +276,7 @@ def discard(hand, last_turn, picked_up_discard_cards, player_position, wildcard_
     >>> last_turn = False
     >>> picked_up_discard_cards = [[16, 24, 33, 47], [2, 3, 4, 8, 12], [1, 5, 9, 13]]
     >>> player_position = 2
-    >>> wildcard_rank = 9
+    >>> wildcard_rank = 5
     >>> num_turns_this_round = 0
     >>> x = discard(hand, last_turn, picked_up_discard_cards, player_position, wildcard_rank, num_turns_this_round)
     >>> x
@@ -261,14 +285,33 @@ def discard(hand, last_turn, picked_up_discard_cards, player_position, wildcard_
     >>> hand = [45, 46, 47, 8]
     >>> last_turn = False
     >>> picked_up_discard_cards = []
-    >>> player_position = 4
-    >>> wildcard_rank = 5
+    >>> player_position = 2
+    >>> wildcard_rank = 4
     >>> num_turns_this_round = 7
     >>> x = discard(hand, last_turn, picked_up_discard_cards, player_position, wildcard_rank, num_turns_this_round)
     >>> x
-    ANS
+    8
     
-    ONE MORE EXAMPLE
+    >>> hand = [52, 51, 5, 7, 1]
+    >>> last_turn = False
+    >>> picked_up_discard_cards = [[]]
+    >>> player_position = 0
+    >>> wildcard_rank = 2
+    >>> num_turns_this_round = 19
+    >>> x = discard(hand, last_turn, picked_up_discard_cards, player_position, wildcard_rank, num_turns_this_round)
+    >>> x
+    1
+    
+    >>> hand = [2, 2, 7]
+    >>> last_turn = False
+    >>> picked_up_discard_cards = []
+    >>> player_position = 1
+    >>> wildcard_rank = 3
+    >>> num_turns_this_round = 2
+    >>> x = discard(hand, last_turn, picked_up_discard_cards, player_position, wildcard_rank, num_turns_this_round)
+    >>> x
+    7
+    
     '''
     #a list of cards that can be discarded
     discard_cards = []
@@ -329,15 +372,4 @@ def discard(hand, last_turn, picked_up_discard_cards, player_position, wildcard_
                     discard_value[i] = discard_value[i] / 2 #so the penalty value is disminished
 
     #after considering everything above, the card with the highest value will be discarded
-    print(picked_up_discard_cards)
     return discard_cards[discard_value.index(max(discard_value))]
-#doctest.testmod()
-'''
-hand = [52, 51, 5, 7, 1]
-last_turn = False
-picked_up_discard_cards = [[]]
-player_position = 0
-wildcard_rank = 2
-num_turns_this_round = 19
-x = discard(hand, last_turn, picked_up_discard_cards, player_position, wildcard_rank, num_turns_this_round)
-'''

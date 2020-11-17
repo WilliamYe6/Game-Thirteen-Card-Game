@@ -6,7 +6,7 @@ from importlib import util
 
 if __name__ == '__main__':
     # load players
-    player_modules = ['human_player', 'ai_player']
+    player_modules = ['random_player', 'random_player', 'random_player', 'ai_player']
     players = []
     for player_module in player_modules:
         spec = util.spec_from_file_location("module.name", player_module + ".py")
