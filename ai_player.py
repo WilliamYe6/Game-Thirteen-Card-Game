@@ -225,16 +225,6 @@ def draw(hand, top_discard, last_turn, picked_up_discard_cards, player_position,
     #when it is not the last turn    
     else:
         
-        #calculate the nb of useless cards
-        to_discard = []
-        for card in hand:
-            if card not in get_arrangement_list:
-                to_discard += card
-        
-        #if there is only one useless card, do not consider it for forming an arrangement or a second_best draw
-        if len(to_discard) == 1:
-            hand.remove(to_discard[0])
-        
         #Not last turn and top card of discard pile is of the same rank as the wildcard OR
         #Not last turn and top card of discard pile forms an arrangement OR
         #Not last turn and top card of discard pile will form an arrangement then pick from discard pile
@@ -266,8 +256,6 @@ def discard(hand, last_turn, picked_up_discard_cards, player_position, wildcard_
     >>> num_turns_this_round = 7
     >>> x = discard(hand, last_turn, picked_up_discard_cards, player_position, wildcard_rank, num_turns_this_round)
     >>> x
-    
-
 
     ONE MORE EXAMPLEEE
     '''
@@ -297,7 +285,7 @@ def discard(hand, last_turn, picked_up_discard_cards, player_position, wildcard_
         rank_of_hand = []
         for i in range(len(hand)):
             rank_of_hand += [get_rank(hand[i])]
-            if (get_rank(hand[i]) != wildcard_rank) and (get_rank(hand[i] not in (hand[:i] + hand[(i + 1):]))):
+            if (get_rank(hand[i]) != wildcard_rank) or (get_rank(hand[i]) not in (rank_of_hand[:i] + rank_of_hand[(i + 1):])):
                 discard_cards += [hand[i]]
                     
     #if all the potential arrangement are groups, then any card could be discarded
@@ -329,13 +317,12 @@ def discard(hand, last_turn, picked_up_discard_cards, player_position, wildcard_
 
     #the card with the highest value will be discarded
     return discard_cards[discard_value.index(max(discard_value))]
-doctest.testmod()
+#doctest.testmod()
 
-'''hand = [6, 8, 12, 22, 24]
+hand = [52, 51, 5, 7, 1]
 last_turn = False
 picked_up_discard_cards = [[]]
 player_position = 0
 wildcard_rank = 2
-num_turns_this_round = 4
+num_turns_this_round = 19
 x = discard(hand, last_turn, picked_up_discard_cards, player_position, wildcard_rank, num_turns_this_round)
-'''
