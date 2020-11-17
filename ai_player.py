@@ -119,8 +119,8 @@ def second_best_draw(hand, wildcard_rank):
     >>> second_best_draw([9, 22, 43, 28], 4)
     [1, 5, 10, 11, 12, 13, 14, 17, 18, 19, 20, 21, 23, 24, 25, 26, 27, 30, 32, 35, 36, 39, 41, 42, 44, 47, 51]
     
-    >>> second_best_draw([, wildcard_rank)
-    
+    >>> second_best_draw([12, 33, 24, 40, 39], 5)
+    [4, 8, 9, 10, 11, 12, 16, 17, 20, 21, 22, 23, 24, 25, 27, 28, 29, 31, 32, 34, 35, 36, 37, 38, 39, 40, 40, 41, 43, 44, 45, 47, 48, 49, 51, 52]
     
     """
     #cards that could be useful for the person to pick up
