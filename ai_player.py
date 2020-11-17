@@ -333,6 +333,12 @@ def discard(hand, last_turn, picked_up_discard_cards, player_position, wildcard_
             if card not in get_arrangement_list and card not in second_best_draw(hand, wildcard_rank):
                 discard_cards += [card]
     
+    #if no card is not part of secon_best_draw and the arrangements
+    #only discard card that cannot form an arrangement
+    if len(discard_cards) == 0:
+        if card not in get_arrangement_list:
+                discard_cards += [card]
+    
     #if no card is useless, the priority is to form groups
     #because there is a higher chance of forming a group than a sequence
     if len(discard_cards) == 0:
