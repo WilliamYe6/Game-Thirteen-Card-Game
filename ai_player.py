@@ -221,17 +221,27 @@ def draw(hand, top_discard, last_turn, picked_up_discard_cards, player_position,
         if top_discard in complete_arrangement(hand, wildcard_rank) or single_card_points(top_discard) < 8:
             return 'discard'
         #else, there is a 50% chances of picking a low penalty point card in the stock pile in a complete deck
-
+        else:
+            return 'stock'
     #when it is not the last turn    
     else:
         
+        #counting the number of cards left to discard
+        discard_cards = []
+        for card in hand:
+            if card not in get_arrangement_list:
+                discard_cards += [card]
+        
+        #if there is only one card left to discard, do not pick from discard
+        if len(discard_cards) == 1 and top_discard not in complete_arrangement(hand, wildcard_rank):
+            return 'stock'
         #Not last turn and top card of discard pile is of the same rank as the wildcard OR
         #Not last turn and top card of discard pile forms an arrangement OR
         #Not last turn and top card of discard pile will form an arrangement then pick from discard pile
-        if ((get_rank(top_discard) == wildcard_rank or top_discard in complete_arrangement(hand, wildcard_rank)) or (top_discard in second_best_draw(hand, wildcard_rank))):
+        elif ((get_rank(top_discard) == wildcard_rank or top_discard in complete_arrangement(hand, wildcard_rank)) or (top_discard in second_best_draw(hand, wildcard_rank))):
             return 'discard'
-        
-    return 'stock'
+        else:
+            return 'stock'
 
 def discard(hand, last_turn, picked_up_discard_cards, player_position, wildcard_rank, num_turns_this_round):
     '''(list, bool, list, int, int, int) -> int
@@ -263,7 +273,7 @@ def discard(hand, last_turn, picked_up_discard_cards, player_position, wildcard_
     discard_cards = []
     
     #making a list from the get arrangement tuple of tuple
-    '''get_arrangement_list = []
+    get_arrangement_list = []
     for tuples in get_arrangement(tuple(hand), wildcard_rank):
         get_arrangement_list += list(tuples)
     
@@ -277,8 +287,8 @@ def discard(hand, last_turn, picked_up_discard_cards, player_position, wildcard_
         #in a normal turn, cards in our hand that are not part of a sequence nor a group
         #and cards that cannot help us form a sequence or a group are useless
             if card not in get_arrangement_list and card not in second_best_draw(hand, wildcard_rank):
-                discard_cards += [card]'''
-    print(discard_cards)
+                discard_cards += [card]
+    
     #if no card is useless, the priority is to form groups
     #because there is a higher chance of forming a group than a sequence
     if len(discard_cards) == 0:
