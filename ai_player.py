@@ -153,7 +153,7 @@ def second_best_draw(hand, wildcard_rank):
                 y = get_rank(hand[j])
                 diff_in_ranks = abs(x - y)
                 
-                if (diff_in_ranks <= int(2/3 * (wildcard_rank + 2 ))) and (deck[i] != hand[j]):
+                if (diff_in_ranks == 1) and (deck[i] != hand[j]):
                     useful_cards.append(deck[i])
           
     #Getting rid of duplicates and ordering  
@@ -232,7 +232,7 @@ def draw(hand, top_discard, last_turn, picked_up_discard_cards, player_position,
             if card not in get_arrangement_list:
                 discard_cards += [card]
         
-        #if there is only one card left to discard, do not pick from discard
+        #If there is only one card left to discard and the top_discard does not add to an exisiting arrangement
         if len(discard_cards) == 1 and top_discard not in complete_arrangement(hand, wildcard_rank):
             return 'stock'
         #Not last turn and top card of discard pile is of the same rank as the wildcard OR
@@ -266,8 +266,9 @@ def discard(hand, last_turn, picked_up_discard_cards, player_position, wildcard_
     >>> num_turns_this_round = 7
     >>> x = discard(hand, last_turn, picked_up_discard_cards, player_position, wildcard_rank, num_turns_this_round)
     >>> x
-
-    ONE MORE EXAMPLEEE
+    ANS
+    
+    ONE MORE EXAMPLE
     '''
     #a list of cards that can be discarded
     discard_cards = []
@@ -316,7 +317,7 @@ def discard(hand, last_turn, picked_up_discard_cards, player_position, wildcard_
     
     for i in range(len(discard_cards)):
         
-        #the penalty point associated to each card in ours hand that is not a part of an arrangement
+        #penalty points associated to each card in our hand that is not a part of an arrangement
         points = [2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 1]
         discard_value += [points[RANKS.index(get_rank(discard_cards[i]))]*turn_multiplier]
         
@@ -327,10 +328,11 @@ def discard(hand, last_turn, picked_up_discard_cards, player_position, wildcard_
             #if discard_cards[i] in complete_arrangement(others_hand, wildcard_rank):
                     discard_value[i] = discard_value[i] / 2 #so the penalty value is disminished
 
-    #the card with the highest value will be discarded
+    #after considering everything above, the card with the highest value will be discarded
+    print(picked_up_discard_cards)
     return discard_cards[discard_value.index(max(discard_value))]
 #doctest.testmod()
-
+'''
 hand = [52, 51, 5, 7, 1]
 last_turn = False
 picked_up_discard_cards = [[]]
@@ -338,3 +340,4 @@ player_position = 0
 wildcard_rank = 2
 num_turns_this_round = 19
 x = discard(hand, last_turn, picked_up_discard_cards, player_position, wildcard_rank, num_turns_this_round)
+'''
